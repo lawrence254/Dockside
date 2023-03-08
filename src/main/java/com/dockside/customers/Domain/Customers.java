@@ -17,7 +17,6 @@ public class Customers {
     private Long id;
     private String first_name;
     private String last_name;
-    private String email_address;
     private String location;
     private String default_payment;
     @Column(name = "phone_number")
