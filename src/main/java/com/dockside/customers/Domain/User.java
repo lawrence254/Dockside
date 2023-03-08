@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 @Data
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,7 +33,7 @@ public class User implements UserDetails{
     @GeneratedValue
     protected UUID userid;
     @Column(unique = true)
-    private String username;
+    private String user_name;
     @Column(name = "email_address", unique = true)
     private String email;
     private String password;
@@ -41,6 +43,11 @@ public class User implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername(){
+        return email;
     }
     @Override
     public boolean isAccountNonExpired() {

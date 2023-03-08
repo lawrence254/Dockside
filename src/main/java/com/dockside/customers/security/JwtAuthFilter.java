@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.FilterChain;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter{
     private final JWTService jwtService;
     private final UserDetailsService userDetailsService;
@@ -35,7 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
             }
             jwt = authHeader.substring(7);
             userEmail = jwtService.extractUsername(jwt);//todo: Extract user email from JWT token
-
+            log.debug("********{}***********", userEmail);
             if(userEmail !=null && SecurityContextHolder.getContext().getAuthentication() == null){
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
                 if(jwtService.isTokenValid(jwt, userDetails)){
