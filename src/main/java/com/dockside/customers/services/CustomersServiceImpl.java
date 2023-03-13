@@ -2,6 +2,7 @@ package com.dockside.customers.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -41,5 +42,15 @@ public class CustomersServiceImpl implements CustomersService {
     public Optional<Customers> getCustomerByPhone(String phone_number) {
         log.info("Searching for customer with Phone Number: {}", phone_number);
         return customerRepo.findCustomerByPhone(phone_number);
+    }
+
+    @Override
+    public Customers updateDetails(Customers customer){
+        return customerRepo.save(customer);
+    }
+
+    @Override
+    public void deleteUserById(Long id){
+        customerRepo.deleteById(id);
     }
 }

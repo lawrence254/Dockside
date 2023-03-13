@@ -7,4 +7,6 @@ public interface CustomersService{
     List<Customers> getAllCustomers();
     Optional<Customers> getCustomerByPhone(String phone_number);
     Optional<Customers> getCustomerById(Long id);
+    Customers updateDetails(Customers customer);
+    void deleteUserById(Long id);
 }
