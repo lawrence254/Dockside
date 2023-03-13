@@ -28,7 +28,6 @@ public class Config {
             .disable()
             .authorizeHttpRequests()
             .requestMatchers("/auth/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/customers").permitAll()
             .anyRequest()
             .authenticated()
             .and()
