@@ -44,11 +44,6 @@ public class CustomersController {
         return ResponseEntity.ok().body(customerService.getAllCustomers());
     }
 
-    // @GetMapping("{userid}")
-    // public ResponseEntity<Optional<Customers>> getCustomerById(@PathVariable Long userid) {
-    //     return ResponseEntity.ok().body(customerService.getCustomerById(userid));
-    // }
-
     @GetMapping("{phone}")
     public ResponseEntity<Optional<Customers>> getCustomersByPhone(@PathVariable String phone) {
         return ResponseEntity.ok().body(customerService.getCustomerByPhone(phone));
