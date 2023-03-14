@@ -18,3 +18,10 @@ jobs:
         run: mvn --batch-mode --update-snapshots package
       - name: Test and Generate Coverage Report
         run: mvn jacoco:prepare-agent test install jacoco:report
+      
+      - uses: harmon758/postgresql-action@v1
+        with:
+          postgresql version: '11'
+          postgresql db: dockside
+          postgresql user: dockside
+          postgresql password: dockside_1234
