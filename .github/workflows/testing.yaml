@@ -3,6 +3,23 @@ name: Java CI
 on: [push]
 
 jobs:
+  runner-job:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+
+        env:
+          POSTGRESS_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retires 5s
+        ports:
+          - 5432:5432
+
   build:
     runs-on: ubuntu-latest
 
@@ -16,10 +33,3 @@ jobs:
           cache: maven
       - name: Test and Generate Coverage Report
         run: mvn jacoco:prepare-agent test install jacoco:report
-      
-      - uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '11'
-          postgresql db: dockside
-          postgresql user: dockside
-          postgresql password: dockside_1234
