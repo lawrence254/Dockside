@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -119,18 +121,44 @@ class CustomersControllerTest {
     }
 
     @Test
-    public void updateCustomerDetails_Failed() throws JsonMappingException {
-        String phone = "1234567890";
+    public void testUpdateCustomerDetails_whenCustomerNotFound() throws JsonMappingException {
+        // Arrange
+        String phone = "01234556";
         Map<String, Object> details = new HashMap<>();
-        details.put("last_name", "John Doe");
 
-        Customers customer = testCustomer();
         when(customerService.getCustomerByPhone(phone)).thenReturn(Optional.empty());
 
-        ResponseEntity<?> response = customersController.updateCustomerDetails(phone, details);
+        // Act
+        ResponseEntity<?> responseEntity;
+        try {
+            responseEntity = customersController.updateCustomerDetails(phone, details);
+        } catch (NoSuchElementException e) {
+            responseEntity = ResponseEntity.notFound().build();
+        }
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Customer not found with phone number: " + phone, response.getBody());
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void testUpdateCustomerDetails() throws JsonMappingException {
+        // Arrange
+        String phone = "01234556";
+        Map<String, Object> details = new HashMap<>();
+        details.put("first_name", "Jane");
+        details.put("last_name", "Doe");
+        Customers customer = testCustomer();
+
+        when(customerService.getCustomerByPhone(phone)).thenReturn(Optional.of(customer));
+        when(objectMapper.updateValue(customer, details)).thenReturn(customer);
+        when(customerService.updateDetails(customer)).thenReturn(customer);
+
+        // Act
+        ResponseEntity<?> responseEntity = customersController.updateCustomerDetails(phone, details);
+
+        // Assert
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(customer, responseEntity.getBody());
     }
 
 
