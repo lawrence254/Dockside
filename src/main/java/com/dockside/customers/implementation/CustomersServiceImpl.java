@@ -2,7 +2,6 @@ package com.dockside.customers.implementation;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -12,12 +11,10 @@ import com.dockside.customers.services.CustomersService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class CustomersServiceImpl implements CustomersService {
     private final CustomersRepository customerRepo;
 

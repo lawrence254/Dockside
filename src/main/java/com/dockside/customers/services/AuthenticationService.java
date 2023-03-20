@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import com.dockside.customers.Domain.Role;
 import com.dockside.customers.Domain.User;
 import com.dockside.customers.Domain.Authentication.*;
+import com.dockside.customers.repositories.TokenRepository;
 import com.dockside.customers.repositories.UsersRepository;
 import com.dockside.customers.security.JWTService;
 
@@ -23,6 +24,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final  JWTService jwtService;
     private final AuthenticationManager authManager;
+    private final TokenRepository tokenRepository;
 
     public AuthenticationResponse register(RegisterRequest request){
         var user = User.builder()
@@ -33,7 +35,7 @@ public class AuthenticationService {
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var user_id = user.getUserid();
-
+        saveUserToken(user, jwtToken);
         AuthenticationResponse response = new AuthenticationResponse(jwtToken, user_id);
         return response;
     }
@@ -42,10 +44,21 @@ public class AuthenticationService {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow(()->new UsernameNotFoundException("User not Found for Given Account"));
         var jwtToken = jwtService.generateToken(user);
-
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
         AuthenticationResponse response = new AuthenticationResponse(jwtToken, user.getUserid());
         return response;
     }
 
-    // logout
+    private void saveUserToken(User user, String jwtToken){
+        var token = Token.builder().user(user).token(jwtToken).tokenType(TokenType.BEARER).expired(false).revoked(false).build();
+        tokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(User user){
+        var validTokens = tokenRepository.findAllValidTokensByUser(user.getUserid());
+        if (validTokens.isEmpty()) return;
+        validTokens.forEach(token->{token.setExpired(true); token.setRevoked(true);});
+        tokenRepository.saveAll(validTokens);
+    }
 }
