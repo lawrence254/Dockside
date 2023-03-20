@@ -35,7 +35,6 @@ public class CustomersController {
 
     @PostMapping
     public ResponseEntity<Customers> createCustomerAccount(@RequestBody Customers customer) {
-        // URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/customers").toUriString());
         return ResponseEntity.ok().body(customerService.createCustomerAccount(customer));
     }
 
@@ -52,10 +51,7 @@ public class CustomersController {
     @PatchMapping("{phone}")
     public ResponseEntity<?> updateCustomerDetails(@PathVariable String phone, @RequestBody Map<String, Object> details) throws JsonMappingException{
         Customers user = customerService.getCustomerByPhone(phone).get();
-        log.info(" Got user by phone {}", user);
         var updatedFields = objectMapper.updateValue(user, details);
-        log.info("After update {}", updatedFields);
-        // return ResponseEntity.ok().body("Test");
         return ResponseEntity.ok().body(customerService.updateDetails(updatedFields));
     }
 

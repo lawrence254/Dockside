@@ -1,14 +1,17 @@
 package com.dockside.customers.Domain.Authentication;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+// @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationResponse {
     private String token;
+    private UUID user_id;
 }

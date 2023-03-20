@@ -2,15 +2,12 @@ package com.dockside.customers.services;
 
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import com.dockside.customers.Domain.Role;
 import com.dockside.customers.Domain.User;
@@ -20,7 +17,6 @@ import com.dockside.customers.security.JWTService;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuthenticationService {
 
     private final UsersRepository userRepository;
@@ -36,13 +32,20 @@ public class AuthenticationService {
             .role(Role.USER).build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        var user_id = user.getUserid();
+
+        AuthenticationResponse response = new AuthenticationResponse(jwtToken, user_id);
+        return response;
     }
     
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow(()->new UsernameNotFoundException("User not Found for Given Account"));
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+
+        AuthenticationResponse response = new AuthenticationResponse(jwtToken, user.getUserid());
+        return response;
     }
+
+    // logout
 }
