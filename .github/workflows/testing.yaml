@@ -1,0 +1,32 @@
+name: Java CI
+
+on: [push]
+
+jobs:
+  runner-job:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+
+        env:
+          POSTGRESS_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5s
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Test and Generate Coverage Report
+        run: mvn jacoco:prepare-agent test install jacoco:report
