@@ -99,7 +99,7 @@ class AuthenticationControllerTest {
         AuthenticationRequest authenticationRequest = new AuthenticationRequest();
         authenticationRequest.setEmail("testuser@test.com");
         authenticationRequest.setPassword("password");
-        UUID userid = UUID.fromString("TestPass");
+        UUID userid = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
 
         String jwtToken = "abc123";
         given(authService.authenticate(authenticationRequest)).willReturn(new AuthenticationResponse(jwtToken, userid));
