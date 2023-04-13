@@ -11,8 +11,8 @@ jobs:
         image: postgres
 
         env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: dockside_1234
+          POSTGRES_USER: dockside
           POSTGRES_DB: dockside
           
         options: >-

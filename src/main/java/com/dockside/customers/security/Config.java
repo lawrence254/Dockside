@@ -27,6 +27,7 @@ public class Config {
             .csrf()
             .disable()
             .authorizeHttpRequests()
+            .requestMatchers("/actuator/**").permitAll()
             .requestMatchers("/auth/**").permitAll()
             .anyRequest()
             .authenticated()
